@@ -7,11 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class FakeStoreProductService implements ProductService{
-     private RestTemplate restTemplate;
+     private final RestTemplate restTemplate;
      FakeStoreProductService(RestTemplate restTemplate){
          this.restTemplate =  restTemplate;
      }
@@ -34,8 +35,12 @@ public class FakeStoreProductService implements ProductService{
     }
 
     @Override
-    public Product replaceProduct() {
-        return null;
+    public Product replaceProduct(Long id, Product product) {
+        //PUT Method
+        //Replace the product with given id with the input product
+        //and return the updated product in ht output 
+         restTemplate.put("https://fakestoreapi.com/products/"+ id, product);
+         return getProductById(id);
     }
 
     @Override
@@ -50,7 +55,16 @@ public class FakeStoreProductService implements ProductService{
 
     @Override
     public List<Product> getAllProducts() {
-        return List.of();
+         FakeStoreProductDto[] products = restTemplate.getForObject("https://fakestoreapi.com/products/" , FakeStoreProductDto[].class);
+
+        if(products == null) {
+            return new ArrayList<>();
+        }
+         List<Product> result = new ArrayList<>();
+         for(FakeStoreProductDto dto: products){
+            result.add(convertFakeStoreProductDtoToProduct(dto));
+         }
+        return result;
     }
 
     @Override

@@ -12,7 +12,7 @@ import java.util.List;
 @RequestMapping("/products")
 public class ProductController {
 
-     private ProductService productService;
+     private final ProductService productService;
 
      ProductController(ProductService productService){
           this.productService = productService;
@@ -26,7 +26,7 @@ public class ProductController {
     }
     @GetMapping()
     public List<Product> getAllProducts(){
-        return new ArrayList<>();
+        return productService.getAllProducts();
     }
     @PostMapping
     public Product createProduct(@RequestBody Product product){
@@ -40,7 +40,7 @@ public class ProductController {
      //Replace a Product
     @PutMapping("/{id}")
      public Product replaceProduct(@PathVariable("id") Long id, @RequestBody Product product){
-        return new Product();
+        return productService.replaceProduct(id,product);
      }
      @DeleteMapping("/{id}")
     public void deleteProduct(@PathVariable("id") Long id){
