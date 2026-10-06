@@ -1,7 +1,10 @@
 package com.example.productservice.controllers;
 
+import com.example.productservice.dtos.ProductRequestDto;
 import com.example.productservice.models.Product;
 import com.example.productservice.services.ProductService;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -19,10 +22,11 @@ public class ProductController {
      }
     //localhost:8080/products/10
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable("id") Long id){
+    public ResponseEntity<Product > getProductById(@PathVariable("id") Long id){
          //Call the fakestore API to get the product with given Id here
-       return productService.getProductById(id);
-
+      Product product = productService.getProductById(id);
+      return new ResponseEntity<>(product, HttpStatusCode.valueOf(200));
+ 
     }
     @GetMapping()
     public List<Product> getAllProducts(){
@@ -39,8 +43,8 @@ public class ProductController {
      }
      //Replace a Product
     @PutMapping("/{id}")
-     public Product replaceProduct(@PathVariable("id") Long id, @RequestBody Product product){
-        return productService.replaceProduct(id,product);
+     public Product replaceProduct(@PathVariable("id") Long id, @RequestBody ProductRequestDto productRequestDto){
+        return productService.replaceProduct(id,productRequestDto);
      }
      @DeleteMapping("/{id}")
     public void deleteProduct(@PathVariable("id") Long id){
