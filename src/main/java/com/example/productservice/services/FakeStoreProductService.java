@@ -1,22 +1,18 @@
 package com.example.productservice.services;
 
-import com.example.productservice.dtos.FakeStoreProductDto;
 import com.example.productservice.dtos.ProductRequestDto;
 import com.example.productservice.models.Category;
 import com.example.productservice.models.Product;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpMessageConverterExtractor;
 import org.springframework.web.client.RequestCallback;
-import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.Objects.nonNull;
 
 @Service
 public class FakeStoreProductService implements ProductService{
@@ -37,10 +33,15 @@ public class FakeStoreProductService implements ProductService{
         return product;
     }
 
-    @Override
-    public void deleteProduct() {
-
-    }
+        @Override
+        public Product deleteProduct(Long id){
+            ResponseEntity<ProductRequestDto> response = restTemplate.exchange("https://fakestoreapi.com/products/" + id,HttpMethod.DELETE, null, ProductRequestDto.class);
+            ProductRequestDto dto = response.getBody();
+            if (dto == null) {
+                return null;
+            }
+            return convertProductRequestDtoToProduct(dto);
+        }
 
     @Override
     public Product replaceProduct(Long id, ProductRequestDto productRequestDto) {
@@ -51,8 +52,7 @@ public class FakeStoreProductService implements ProductService{
         //Convert ProductRequestDto to the actual Product
         Product product = convertProductRequestDtoToProduct(productRequestDto);
         RequestCallback requestCallback = restTemplate.httpEntityCallback(product ,ProductRequestDto.class);
-        HttpMessageConverterExtractor<ProductRequestDto> responseExtractor =
-                new HttpMessageConverterExtractor<>(ProductRequestDto.class, restTemplate.getMessageConverters());
+        HttpMessageConverterExtractor<ProductRequestDto> responseExtractor = new HttpMessageConverterExtractor<>(ProductRequestDto.class, restTemplate.getMessageConverters());
         ProductRequestDto dto =  restTemplate.execute("https://fakestoreapi.com/products/"+id, HttpMethod.PUT, requestCallback, responseExtractor);
         if(dto == null)
             return null;
@@ -60,14 +60,28 @@ public class FakeStoreProductService implements ProductService{
         return convertProductRequestDtoToProduct(dto);
     }
 
-    @Override
-    public Product updateProduct() {
-        return null;
-    }
+        @Override
+        public Product updateProduct(Long id, ProductRequestDto productRequestDto) {
+            ResponseEntity<ProductRequestDto> response = restTemplate.exchange("https://fakestoreapi.com/products/" + id, HttpMethod.PATCH, new HttpEntity<>(productRequestDto), ProductRequestDto.class);
+            ProductRequestDto dto = response.getBody();
+
+            if (dto == null) {
+                return null;
+            }
+
+            return convertProductRequestDtoToProduct(dto);
+        }
 
     @Override
-    public Product createProduct() {
-        return null;
+    public Product createProduct(ProductRequestDto productRequestDto) {
+        RequestCallback requestCallback = restTemplate.httpEntityCallback(productRequestDto, ProductRequestDto.class);
+        HttpMessageConverterExtractor<ProductRequestDto> responseExtractor =
+                new HttpMessageConverterExtractor<>(ProductRequestDto.class, restTemplate.getMessageConverters());
+        ProductRequestDto dto = restTemplate.execute("https://fakestoreapi.com/products/", HttpMethod.POST, requestCallback, responseExtractor);
+        if(dto == null)
+            return null;
+        //Convert productRequestDto to product object.
+        return convertProductRequestDtoToProduct(dto);
     }
 
     @Override

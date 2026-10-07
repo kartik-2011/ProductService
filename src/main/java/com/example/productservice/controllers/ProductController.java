@@ -6,9 +6,7 @@ import com.example.productservice.services.ProductService;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -33,13 +31,13 @@ public class ProductController {
         return productService.getAllProducts();
     }
     @PostMapping
-    public Product createProduct(@RequestBody Product product){
-    return new Product();
+    public Product createProduct(@RequestBody ProductRequestDto productRequestDto){
+    return productService.createProduct(productRequestDto);
      }
      //Partial Update
     @PatchMapping("/{id}")
-     public Product updateProduct(@PathVariable("id") Long id, @RequestBody Product product){
-        return new Product();
+     public Product updateProduct(@PathVariable("id") Long id, @RequestBody ProductRequestDto productRequestDto){
+        return productService.updateProduct(id, productRequestDto);
      }
      //Replace a Product
     @PutMapping("/{id}")
@@ -47,7 +45,7 @@ public class ProductController {
         return productService.replaceProduct(id,productRequestDto);
      }
      @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable("id") Long id){
-        return;
+    public Product deleteProduct(@PathVariable("id") Long id){
+        return productService.deleteProduct(id);
      }
 }
