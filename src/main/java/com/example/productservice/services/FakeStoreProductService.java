@@ -1,6 +1,7 @@
 package com.example.productservice.services;
 
 import com.example.productservice.dtos.ProductRequestDto;
+import com.example.productservice.exceptions.InvalidProductIdException;
 import com.example.productservice.models.Category;
 import com.example.productservice.models.Product;
 import org.springframework.http.HttpEntity;
@@ -99,12 +100,14 @@ public class FakeStoreProductService implements ProductService{
     }
 
     @Override
-    public Product getProductById(Long id) {
+    public Product getProductById(Long id) throws InvalidProductIdException{
         ProductRequestDto productRequestDto =
          restTemplate.getForObject("https://fakestoreapi.com/products/" +id , ProductRequestDto.class);
         if(productRequestDto == null)
-              return null;
+              throw new InvalidProductIdException("Invalid ProductId Passed");
         //Convert productRequestDto to product object.
             return convertProductRequestDtoToProduct(productRequestDto);
+//         throw new RuntimeException("Something went wrong in FakeStoreProduct Service");
     }
+
 }

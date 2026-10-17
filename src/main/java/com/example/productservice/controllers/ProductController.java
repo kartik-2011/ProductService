@@ -1,12 +1,16 @@
 package com.example.productservice.controllers;
 
 import com.example.productservice.dtos.ProductRequestDto;
+import com.example.productservice.exceptions.InvalidProductIdException;
+import com.example.productservice.exceptions.ProductControllerSpecificException;
 import com.example.productservice.models.Product;
 import com.example.productservice.services.ProductService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.SocketOption;
 import java.util.List;
 
 @RestController
@@ -20,11 +24,18 @@ public class ProductController {
      }
     //localhost:8080/products/10
     @GetMapping("/{id}")
-    public ResponseEntity<Product > getProductById(@PathVariable("id") Long id){
+    public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) throws InvalidProductIdException {
          //Call the fakestore API to get the product with given Id here
-      Product product = productService.getProductById(id);
-      return new ResponseEntity<>(product, HttpStatusCode.valueOf(200));
- 
+//        throw new RuntimeException("Something went wrong Kartik ");
+//        Product product = null;
+//        try {
+//            product = productService.getProductById(id);
+//        } catch(RuntimeException e) {
+//            System.out.println("Something went wrong");
+//            return new ResponseEntity<>(product,HttpStatus.NOT_FOUND);
+//        }
+       Product product = productService.getProductById(id);
+      return new ResponseEntity<>(product, HttpStatus.OK);
     }
     @GetMapping()
     public List<Product> getAllProducts(){
@@ -48,4 +59,10 @@ public class ProductController {
     public Product deleteProduct(@PathVariable("id") Long id){
         return productService.deleteProduct(id);
      }
+
+     @ExceptionHandler(ProductControllerSpecificException.class)
+    public ResponseEntity<Void> handleProductControllerSpecificException(){
+         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+     }
+
 }
