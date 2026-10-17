@@ -23,9 +23,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
           return null;
  }
  @ExceptionHandler(InvalidProductIdException.class)
- public ResponseEntity<ExceptionDto> handleInvalidProductIdException(){
+ public ResponseEntity<ExceptionDto> handleInvalidProductIdException(InvalidProductIdException exception){
       ExceptionDto dto = new ExceptionDto();
+      dto.setProductId(exception.getProductId());
       dto.setMessage("Invalid ProductId Passed,Please Try again Later");
-      return new ResponseEntity<>(dto,HttpStatus.NOT_FOUND); 
+      return new ResponseEntity<>(dto,HttpStatus.NOT_FOUND);
  }
 }
