@@ -32,7 +32,7 @@ public class ProductController {
 //            product = productService.getProductById(id);
 //        } catch(RuntimeException e) {
 //            System.out.println("Something went wrong");
-//            return new ResponseEntity<>(product,HttpStatus.NOT_FOUND);
+//            return new ResponseEntity<>(p roduct,HttpStatus.NOT_FOUND);
 //        }
        Product product = productService.getProductById(id);
       return new ResponseEntity<>(product, HttpStatus.OK);
