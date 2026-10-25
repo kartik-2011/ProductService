@@ -4,6 +4,7 @@ import com.example.productservice.dtos.ProductRequestDto;
 import com.example.productservice.exceptions.InvalidProductIdException;
 import com.example.productservice.models.Category;
 import com.example.productservice.models.Product;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +16,8 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
-public class FakeStoreProductService implements ProductService{
+@Service("fakeStoreProductService")
+ public class FakeStoreProductService implements ProductService{
      private final RestTemplate restTemplate;
      FakeStoreProductService(RestTemplate restTemplate){
          this.restTemplate =  restTemplate;
