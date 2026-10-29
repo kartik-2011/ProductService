@@ -29,9 +29,9 @@ import java.util.List;
         product.setTitle(productRequestDto.getTitle());
         product.setDescription(productRequestDto.getDescription());
         product.setPrice(productRequestDto.getPrice());
-        Category category = new Category();
-        category.setTitle(productRequestDto.getCategory());
-        product.setCategory(category);
+        Category category = productRequestDto.getCategory();
+//        category.setTitle(productRequestDto.getCategory().getTitle());
+//        product.setCategory(category);
         return product;
     }
 
